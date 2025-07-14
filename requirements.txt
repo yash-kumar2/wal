@@ -1,0 +1,6 @@
+flask
+pymongo
+google-generativeai
+rapidfuzz
+flask-cors
+gunicorn
