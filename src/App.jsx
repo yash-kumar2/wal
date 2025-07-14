@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Navbar from "./components/Navbar";
 import "./style/App.css";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Pannel } from "./components/Pannel";
 import { Main } from "./pages/Main";
 import Headroom from "react-headroom";
@@ -25,22 +25,72 @@ import { useContext } from "react";
 import { AuthContext } from "./AuthContext/AuthProvider";
 import Chatbot from "./components/chabot";
 
-
 function App() {
   const { signin } = useContext(AuthContext);
   const { cart } = useContext(AuthContext);
+  
+  // Responsive values using Chakra UI's useBreakpointValue hook
+  const containerPadding = useBreakpointValue({
+    base: "0px",
+    sm: "8px",
+    md: "16px",
+    lg: "24px",
+    xl: "32px"
+  });
+  
+  const maxWidth = useBreakpointValue({
+    base: "100%",
+    sm: "100%",
+    md: "100%",
+    lg: "1200px",
+    xl: "1400px"
+  });
+  
+  const showPanel = useBreakpointValue({
+    base: false, // Hide panel on mobile
+    md: true     // Show panel on medium screens and up
+  });
+
   return (
     <>
-      <Box w="100%" px={{ base: 0, md: 0 }}>
+      <Box 
+        w="100%" 
+        maxW={maxWidth}
+        mx="auto" // Center the container
+        px={containerPadding}
+        minH="100vh" // Ensure full viewport height
+        position="relative"
+      >
         {signin ? null : (
-          <div className="headroom">
+          <Box className="headroom">
             <Navbar />
-            {cart ? null : <Pannel />}
-          </div>
+            {/* Conditionally render Panel based on screen size and cart state */}
+            {cart ? null : (showPanel && <Pannel />)}
+          </Box>
         )}
-        <Allroutes />
-        <Footer />
-        <Chatbot />
+        
+        {/* Main content area with responsive padding */}
+        <Box
+          px={{ base: "16px", sm: "24px", md: "32px", lg: "40px" }}
+          py={{ base: "16px", sm: "20px", md: "24px" }}
+        >
+          <Allroutes />
+        </Box>
+        
+        {/* Footer with responsive spacing */}
+        <Box mt={{ base: "40px", md: "60px", lg: "80px" }}>
+          <Footer />
+        </Box>
+        
+        {/* Chatbot with responsive positioning */}
+        <Box
+          position="fixed"
+          bottom={{ base: "16px", md: "24px" }}
+          right={{ base: "16px", md: "24px" }}
+          zIndex={1000}
+        >
+          <Chatbot />
+        </Box>
       </Box>
     </>
   );
